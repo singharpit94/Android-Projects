@@ -30,7 +30,7 @@ public class TimeService extends Service {
 
 
 
-         class IncomingSms extends BroadcastReceiver {
+        public class IncomingSms extends BroadcastReceiver {
 
 
             Toast mtoast;
