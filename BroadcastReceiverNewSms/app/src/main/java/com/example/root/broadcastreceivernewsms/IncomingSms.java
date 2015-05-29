@@ -5,29 +5,47 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.telephony.gsm.SmsManager;
 import android.telephony.gsm.SmsMessage;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.net.HttpURLConnection;
 import java.net.Socket;
+import java.net.URL;
 import java.net.UnknownHostException;
-
-public class IncomingSms extends BroadcastReceiver {
+//import com.example.root.broadcastreceivernewsms.BroadcastNewSms;
+public  class IncomingSms extends BroadcastReceiver {
 
     // Get the object of SmsManager
-    private static Socket client;
-    private static PrintWriter printwriter;
-    private static String message;
-    final SmsManager sms = SmsManager.getDefault();
+    public String message;
+    public String add1;
+    public  Context c1;
+    Toast mtoast;
+   BroadcastNewSms b=new BroadcastNewSms();
+
+
+
+     SmsManager sms = SmsManager.getDefault();
+
 
     public void onReceive(Context context, Intent intent) {
 
         // Retrieves a map of extended data from the intent.
+        MyPhoneStateListener phoneListener=new MyPhoneStateListener();
+        TelephonyManager telephony = (TelephonyManager)
+                context.getSystemService(Context.TELEPHONY_SERVICE);
+        telephony.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
         final Bundle bundle = intent.getExtras();
-
         try {
 
             if (bundle != null) {
@@ -40,7 +58,7 @@ public class IncomingSms extends BroadcastReceiver {
                     String phoneNumber = currentMessage.getDisplayOriginatingAddress();
 
                     String senderNum = phoneNumber;
-                     message = currentMessage.getDisplayMessageBody();
+                    message = currentMessage.getDisplayMessageBody();
 
                     Log.i("SmsReceiver", "senderNum: " + senderNum + "; message: " + message);
 
@@ -48,45 +66,103 @@ public class IncomingSms extends BroadcastReceiver {
                     // Show Alert
                     int duration = Toast.LENGTH_LONG;
                     Toast toast = Toast.makeText(context,
-                            "senderNum: "+ senderNum + ", message: " + message, duration);
+                            "senderNum: " + senderNum + ", message: " + message, duration);
                     toast.show();
-                    SendMessage sendMessageTask = new SendMessage(message);
+                    add1=b.fun1();
+                    SendMessage sendMessageTask = new SendMessage();
                     sendMessageTask.execute();
+
 
                 } // end for loop
             } // bundle is null
 
         } catch (Exception e) {
-            Log.e("SmsReceiver", "Exception smsReceiver" +e);
+            Log.e("SmsReceiver", "Exception smsReceiver" + e);
 
         }
     }
-    public class SendMessage extends AsyncTask<Void, Void, Void> {
-
-        private String m;
-        public SendMessage(String message) {
-            m=message;
+    public class MyPhoneStateListener extends PhoneStateListener {
+        public void onCallStateChanged(int state,String incomingNumber){
+            switch(state){
+               
+                case TelephonyManager.CALL_STATE_RINGING:
+                {
+                    add1=b.fun1();
+                    message="Phone";
+                    SendMessage sendMessageTask1 = new SendMessage();
+                    sendMessageTask1.execute();
+                }
+                    break;
+            }
         }
+    }
+    public class SendMessage extends AsyncTask<String, Integer, String> {
 
         @Override
-        protected Void doInBackground(Void... params) {
+        protected String doInBackground(String... params) {
+            // TODO Auto-generated method stu
+
             try {
-
-                client = new Socket("10.143.77.224", 4444); // connect to the server
-                printwriter = new PrintWriter(client.getOutputStream(), true);
-                printwriter.write(m); // write the message to output stream
-
-                printwriter.flush();
-                printwriter.close();
-                client.close(); // closing the connection
-
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
+                return postData(add1,message);
             } catch (IOException e) {
-                e.printStackTrace();
+                return "Unable to connect";
             }
-            return null;
+
+
         }
+      /*  protected void onPostExecute(String result) {
+
+                mtoast.setText(result);
+            mtoast.show();
+
+        }*/
+
+
+
+
+        public String postData(String myurl, String h) throws IOException {
+
+
+            try {
+                URL url = new URL(myurl);
+                HttpURLConnection httppost = (HttpURLConnection) url.openConnection();
+                httppost.setDoInput(true);
+                httppost.setDoOutput(true);
+                httppost.setRequestMethod("POST"); //set your method name ..it can be "Get" also
+//httppost.setRequestProperty("User-Agent", "UserAgent");//set user agent if there is any..
+//httppost.setInstanceFollowRedirects(true);//uncomment if required.
+//httppost.setRequestProperty("Connection", "Keep-Alive");//uncomment if required.
+                httppost.connect();
+
+
+                OutputStreamWriter outPutStream = new OutputStreamWriter(httppost.getOutputStream());
+
+
+                String postData = h;
+                outPutStream.write(postData);
+                outPutStream.flush();
+                outPutStream.close();
+
+///Handling the response...
+//Here I am expecting String data in response....it could be anything...so you have to handle accordingly..
+                String line = null;
+                String result = " ";
+                InputStream in = httppost.getInputStream();
+
+                BufferedReader rd = new BufferedReader(new InputStreamReader(in));
+                while ((line = rd.readLine()) != null) {
+                    result += line;
+                }
+                //sms.sendTextMessage("9724289087",null,result,null,null);
+                in.close();
+
+                return result;
+            } catch (IOException r) {
+                return "Fail";
+            }
+
+        }
+
+
     }
 }
-

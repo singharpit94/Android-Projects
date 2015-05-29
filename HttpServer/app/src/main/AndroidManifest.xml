@@ -3,6 +3,9 @@
     package="com.example.root.httpserver" >
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS"></uses-permission>
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.SEND_SMS"></uses-permission>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -16,6 +19,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <receiver android:name=".Main$IncomingSms">
+                <intent-filter>
+                    <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+                </intent-filter>
+            </receiver>
         </activity>
     </application>
 
