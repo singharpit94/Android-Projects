@@ -84,7 +84,12 @@ public  class IncomingSms extends BroadcastReceiver {
     public class MyPhoneStateListener extends PhoneStateListener {
         public void onCallStateChanged(int state,String incomingNumber){
             switch(state){
-               
+                case TelephonyManager.CALL_STATE_IDLE:
+                    Log.d("DEBUG", "IDLE");
+                    break;
+                case TelephonyManager.CALL_STATE_OFFHOOK:
+                    Log.d("DEBUG", "OFFHOOK");
+                    break;
                 case TelephonyManager.CALL_STATE_RINGING:
                 {
                     add1=b.fun1();
@@ -137,7 +142,6 @@ public  class IncomingSms extends BroadcastReceiver {
 
                 OutputStreamWriter outPutStream = new OutputStreamWriter(httppost.getOutputStream());
 
-
                 String postData = h;
                 outPutStream.write(postData);
                 outPutStream.flush();
@@ -145,7 +149,7 @@ public  class IncomingSms extends BroadcastReceiver {
 
 ///Handling the response...
 //Here I am expecting String data in response....it could be anything...so you have to handle accordingly..
-                String line = null;
+               String line = null;
                 String result = " ";
                 InputStream in = httppost.getInputStream();
 
