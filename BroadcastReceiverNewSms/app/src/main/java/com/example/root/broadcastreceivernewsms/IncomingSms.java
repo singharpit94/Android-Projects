@@ -1,10 +1,14 @@
 package com.example.root.broadcastreceivernewsms;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.telephony.gsm.SmsManager;
@@ -26,8 +30,10 @@ import java.net.UnknownHostException;
 //import com.example.root.broadcastreceivernewsms.BroadcastNewSms;
 public  class IncomingSms extends BroadcastReceiver {
 
-    // Get the object of SmsManager
+
     public String message;
+    public String name;
+
     public String add1;
     public  Context c1;
     Toast mtoast;
@@ -58,17 +64,33 @@ public  class IncomingSms extends BroadcastReceiver {
                     String phoneNumber = currentMessage.getDisplayOriginatingAddress();
 
                     String senderNum = phoneNumber;
+                    String contactName=" ";
                     message = currentMessage.getDisplayMessageBody();
+                    ContentResolver cr = context.getContentResolver();
+                    Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
+                    Cursor cursor = cr.query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);
+                    if (cursor == null) {
+                        contactName="Unknown";
+                    }
 
+                    if(cursor.moveToFirst()) {
+                        contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+                    }
+
+                    if(cursor != null && !cursor.isClosed()) {
+                        cursor.close();
+                    }
+                    name=contactName;
                     Log.i("SmsReceiver", "senderNum: " + senderNum + "; message: " + message);
 
 
                     // Show Alert
                     int duration = Toast.LENGTH_LONG;
                     Toast toast = Toast.makeText(context,
-                            "senderNum: " + senderNum + ", message: " + message, duration);
+                            "senderNum: " + senderNum + ", message: " + message+ " "+ name, duration);
                     toast.show();
                     add1=b.fun1();
+                    message=message+"\n"+"from"+senderNum;
                     SendMessage sendMessageTask = new SendMessage();
                     sendMessageTask.execute();
 
@@ -91,11 +113,29 @@ public  class IncomingSms extends BroadcastReceiver {
                     Log.d("DEBUG", "OFFHOOK");
                     break;
                 case TelephonyManager.CALL_STATE_RINGING:
-                {
+                {    String contactName=" ";
                     add1=b.fun1();
-                    message="Phone";
-                    SendMessage sendMessageTask1 = new SendMessage();
-                    sendMessageTask1.execute();
+                   c1=b.getAppContext();
+                    ContentResolver cr = c1.getContentResolver();
+                    Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(incomingNumber));
+                    Cursor cursor = cr.query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);
+                    if (cursor == null) {
+                        contactName="Unknown";
+                    }
+
+                    if(cursor.moveToFirst()) {
+                        contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+                    }
+
+                    if(cursor != null && !cursor.isClosed()) {
+                        cursor.close();
+                    }
+                    name=contactName;
+
+                    message="Phone from "+incomingNumber+"\n";
+                    if(add1.length()>2)
+                    { SendMessage sendMessageTask1 = new SendMessage();
+                    sendMessageTask1.execute();}
                 }
                     break;
             }
@@ -108,7 +148,7 @@ public  class IncomingSms extends BroadcastReceiver {
             // TODO Auto-generated method stu
 
             try {
-                return postData(add1,message);
+                return postData(add1,message,name);
             } catch (IOException e) {
                 return "Unable to connect";
             }
@@ -125,7 +165,7 @@ public  class IncomingSms extends BroadcastReceiver {
 
 
 
-        public String postData(String myurl, String h) throws IOException {
+        public String postData(String myurl, String h,String name) throws IOException {
 
 
             try {
@@ -143,6 +183,7 @@ public  class IncomingSms extends BroadcastReceiver {
                 OutputStreamWriter outPutStream = new OutputStreamWriter(httppost.getOutputStream());
 
                 String postData = h;
+                outPutStream.write(name+"\n");
                 outPutStream.write(postData);
                 outPutStream.flush();
                 outPutStream.close();
