@@ -45,6 +45,7 @@ public class BroadcastNewSms extends Activity implements View.OnClickListener {
     String msgLog = "";
     String phone="";
     String content="";
+    public final static String EXTRA_MESSAGE = "com.example.root.broadcastreceivernewsms.MESSAGE";
 
 
     ServerSocket httpServerSocket;
@@ -85,7 +86,7 @@ public class BroadcastNewSms extends Activity implements View.OnClickListener {
         } else {
             url = et.getText().toString();
             Sent d = new Sent();
-            d.execute(url, "http://"+getIpAddress() + ":" + HttpServerThread.HttpServerPORT);
+            d.execute(url, "http://" + getIpAddress() + ":" + HttpServerThread.HttpServerPORT);
 
         }
 
@@ -297,6 +298,10 @@ public class BroadcastNewSms extends Activity implements View.OnClickListener {
         }
         protected void onPostExecute(String result) {
             Toast.makeText(getAppContext(), result, Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(getAppContext(), DisplayMessageActivity.class);
+            intent.putExtra(EXTRA_MESSAGE, result);
+            startActivity(intent);
+
 
 
 

@@ -15,6 +15,7 @@ import android.telephony.gsm.SmsManager;
 import android.telephony.gsm.SmsMessage;
 import android.util.Log;
 import android.view.View;
+import android.webkit.URLUtil;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -31,17 +32,18 @@ import java.net.UnknownHostException;
 public  class IncomingSms extends BroadcastReceiver {
 
 
-    public String message;
-    public String name;
+    public String message=" ";
+    public String name="Unkonwn";
 
-    public String add1;
+    public String add1=" ";
     public  Context c1;
     Toast mtoast;
+    int i=1;
    BroadcastNewSms b=new BroadcastNewSms();
 
 
 
-     SmsManager sms = SmsManager.getDefault();
+
 
 
     public void onReceive(Context context, Intent intent) {
@@ -64,7 +66,7 @@ public  class IncomingSms extends BroadcastReceiver {
                     String phoneNumber = currentMessage.getDisplayOriginatingAddress();
 
                     String senderNum = phoneNumber;
-                    String contactName=" ";
+                    String contactName="Unknown";
                     message = currentMessage.getDisplayMessageBody();
                     ContentResolver cr = context.getContentResolver();
                     Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
@@ -106,14 +108,10 @@ public  class IncomingSms extends BroadcastReceiver {
     public class MyPhoneStateListener extends PhoneStateListener {
         public void onCallStateChanged(int state,String incomingNumber){
             switch(state){
-                case TelephonyManager.CALL_STATE_IDLE:
-                    Log.d("DEBUG", "IDLE");
-                    break;
-                case TelephonyManager.CALL_STATE_OFFHOOK:
-                    Log.d("DEBUG", "OFFHOOK");
-                    break;
+
+
                 case TelephonyManager.CALL_STATE_RINGING:
-                {    String contactName=" ";
+                {    String contactName="Unknown";
                     add1=b.fun1();
                    c1=b.getAppContext();
                     ContentResolver cr = c1.getContentResolver();
@@ -133,9 +131,13 @@ public  class IncomingSms extends BroadcastReceiver {
                     name=contactName;
 
                     message="Phone from "+incomingNumber+"\n";
-                    if(add1.length()>2)
+
+                  if( URLUtil.isValidUrl(add1))
                     { SendMessage sendMessageTask1 = new SendMessage();
                     sendMessageTask1.execute();}
+                    else {
+                      Toast.makeText(b.getAppContext(), "Empty", Toast.LENGTH_LONG).show();
+                  }
                 }
                     break;
             }
