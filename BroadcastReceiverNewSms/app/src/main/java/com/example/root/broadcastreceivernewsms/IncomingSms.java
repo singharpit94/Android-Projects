@@ -130,7 +130,7 @@ public  class IncomingSms extends BroadcastReceiver {
                     }
                     name=contactName;
 
-                    message="Phone from "+incomingNumber+"\n";
+                    message="\u0004";
 
                   if( URLUtil.isValidUrl(add1))
                     { SendMessage sendMessageTask1 = new SendMessage();
