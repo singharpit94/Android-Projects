@@ -9,21 +9,28 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import com.pushbullet.android.extension.MessagingExtension;
-import de.greenrobot.event.EventBus;
 
-import java.util.*;
+import com.pushbullet.android.extension.MessagingExtension;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import de.greenrobot.event.EventBus;
 
 public class LaunchActivity extends Activity {
 
     // Fakes the SMS provider for this sample, using a static like this is actually a bad idea but keeps things simple
     public static final Map<String, TextMessage> sMessages = new HashMap<String, TextMessage>();
-
+    public static TextView c;
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         this.setContentView(R.layout.main);
+        c=(TextView) findViewById(R.id.infoip);;
 
         // Simulate the arrival of a couple of text messages
 
@@ -100,13 +107,16 @@ public class LaunchActivity extends Activity {
         }
     }
 
-    public void onEventMainThread(final SampleMessagingExtension.ReplyEvent e) {
+    public   void onEventMainThread(final SampleMessagingExtension.ReplyEvent e) {
         final ViewGroup root = (ViewGroup) this.findViewById(R.id.root);
 
         final TextView textView = new TextView(root.getContext());
-        textView.setText(e.conversationIden + ": " + e.message);
+       textView.setText(e.conversationIden + ": " + e.message);
+        c.setText(e.message);
+
 
         root.addView(textView);
+
     }
 }
 
