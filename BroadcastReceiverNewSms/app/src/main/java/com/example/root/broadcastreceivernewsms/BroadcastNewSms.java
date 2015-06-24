@@ -229,7 +229,7 @@ public class BroadcastNewSms extends Activity implements View.OnClickListener {
                 }
                 int len=phone.length();
 
-                phone=phone.substring(0, Math.min(phone.length(),10));
+                phone=phone.substring(0, Math.min(phone.length(),len));
                 // Toast.makeText(getAppContext(), phone, Toast.LENGTH_LONG).show();
                 // sms.sendTextMessage("9832821697", null,"Working", null, null);
 
