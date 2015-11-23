@@ -1,0 +1,61 @@
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <LinearLayout
+        android:layout_width="382dp"
+        android:layout_height="wrap_content"
+        android:weightSum="1">
+
+        <EditText
+            android:id="@+id/etSearch"
+            android:layout_width="258dp"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/bSearch"
+            android:layout_width="111dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="SEARCH"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools" android:layout_width="300dp"
+            android:layout_height="404dp" android:id="@+id/map"
+            tools:context="com.ofinu.ofinudriver.StartRide"
+            android:name="com.google.android.gms.maps.SupportMapFragment" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="^"
+                android:id="@+id/bZoomIn"
+                android:layout_marginTop="10dp"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="v"
+                android:id="@+id/bZoomout" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="324dp"
+        android:layout_height="wrap_content"
+        android:text="START RIDE"
+        android:id="@+id/bStartRide"
+        android:layout_gravity="center" />
+
+</LinearLayout>
