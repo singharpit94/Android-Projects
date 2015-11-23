@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Ofinu_cust</string>
+    <string name="google_maps_key">AIzaSyBVQZzLsIvtMpttImak7BYM-OofxjG-taM</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_activity_register">Register</string>
+    <string name="title_activity_book_your_ride">BookYourRide</string>
+    <string name="title_activity_get_your_ride">Map</string>
+    <string name="title_activity_reserve_your_ride">Map</string>
+    <string name="title_activity_rate_card">RateCard</string>
+    <string name="title_activity_dash_board">DashBoard</string>
+    <string name="title_activity_ecart">Map</string>
+</resources>

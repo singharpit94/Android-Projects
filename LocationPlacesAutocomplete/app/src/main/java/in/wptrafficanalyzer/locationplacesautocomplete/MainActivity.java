@@ -1,4 +1,4 @@
-package com.example.arpit.myapplication;
+package in.wptrafficanalyzer.locationplacesautocomplete;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.widget.AutoCompleteTextView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
@@ -42,6 +43,7 @@ public class MainActivity extends Activity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 placesTask = new PlacesTask();
+
                 placesTask.execute(s.toString());
             }
 
@@ -89,7 +91,7 @@ public class MainActivity extends Activity {
             br.close();
 
         }catch(Exception e){
-            //Log.d("Exception while downloading url", e.toString());
+            Log.d("Exception ", e.toString());
         }finally{
             iStream.close();
             urlConnection.disconnect();
@@ -106,7 +108,7 @@ public class MainActivity extends Activity {
             String data = "";
 
             // Obtain browser key from https://code.google.com/apis/console
-            String key = "AIzaSyAt0u7Q5hq7gcHJODCSRKOAX0dX6rh7e5c";
+            String key = "AIzaSyCIpjYgXhx4scDrTcRKJC5IGlgmMU6RKyg";
 
             String input="";
 
@@ -134,6 +136,7 @@ public class MainActivity extends Activity {
             try{
                 // Fetching the data from we service
                 data = downloadUrl(url);
+                Toast.makeText(getApplicationContext(),"DOne",Toast.LENGTH_LONG);
             }catch(Exception e){
                 Log.d("Background Task",e.toString());
             }
@@ -179,16 +182,13 @@ public class MainActivity extends Activity {
         protected void onPostExecute(List<HashMap<String, String>> result) {
 
             String[] from = new String[] { "description"};
-            int[] to = new int[] { android.R.id.text1 };
+            int[] to = new int[] { R.layout.textt };
 
             // Creating a SimpleAdapter for the AutoCompleteTextView
-            SimpleAdapter adapter = new SimpleAdapter(getBaseContext(), result, android.R.layout.simple_list_item_1, from, to);
+            SimpleAdapter adapter = new SimpleAdapter(getBaseContext(), result, R.layout.list_item, from, to);
 
             // Setting the adapter
             atvPlaces.setAdapter(adapter);
-            synchronized (adapter){
-                adapter.notifyDataSetChanged();
-            }
         }
     }
 
