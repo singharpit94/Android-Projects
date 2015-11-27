@@ -7,6 +7,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,6 +15,7 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Context;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -25,6 +27,9 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.Toast;
 
+import com.google.android.gms.identity.intents.Address;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.vision.barcode.Barcode;
 
 
 public class GooglePlacesAutocompleteActivity extends Activity implements OnItemClickListener {
@@ -37,6 +42,7 @@ public class GooglePlacesAutocompleteActivity extends Activity implements OnItem
 
     //------------ make your specific key ------------
     private static final String API_KEY = "AIzaSyCIpjYgXhx4scDrTcRKJC5IGlgmMU6RKyg";
+    LatLng l=null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,6 +57,9 @@ public class GooglePlacesAutocompleteActivity extends Activity implements OnItem
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         String str = (String) adapterView.getItemAtPosition(position);
         Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
+        l=getLocationFromAddress(getApplicationContext(),str);
+        String lat=l.toString();
+        Toast.makeText(this,lat,Toast.LENGTH_LONG).show();
     }
 
     public static ArrayList<String> autocomplete(String input) {
@@ -153,6 +162,32 @@ public class GooglePlacesAutocompleteActivity extends Activity implements OnItem
             };
             return filter;
         }
+    }
+
+
+    public LatLng getLocationFromAddress(Context context,String strAddress) {
+
+        Geocoder coder = new Geocoder(context);
+        List<android.location.Address> address;
+        LatLng p1 = null;
+
+        try {
+            address = coder.getFromLocationName(strAddress, 5);
+            if (address == null) {
+                return null;
+            }
+            android.location.Address location = address.get(0);
+            location.getLatitude();
+            location.getLongitude();
+
+            p1 = new LatLng(location.getLatitude(), location.getLongitude() );
+
+        } catch (Exception ex) {
+
+            ex.printStackTrace();
+        }
+
+        return p1;
     }
 
 }
