@@ -3,6 +3,7 @@ package com.example.arpit.nm;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -19,16 +20,25 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private GoogleMap googleMap;
+    DatabaseHandler db=new DatabaseHandler(this);
+    List<Places> places;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        db.addPlaces(new Places(1, 22.997284, 72.599593, 20.0, "Rambaug", 10));
+        db.addPlaces(new Places(2,22.996170,72.599584,30.0,"Maninagar",10));
+        db.addPlaces(new Places(3,22.978258,72.600226,30.0,"Isanpur",10));
         try {
             // Loading map
             initilizeMap();
@@ -119,6 +129,20 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(getApplicationContext(),
                         "Sorry! unable to create maps", Toast.LENGTH_SHORT)
                         .show();
+            }
+            else
+            {
+                places=db.getAllPlaces();
+                for(Places p:places)
+                {
+                    String log = "Id: "+p.getId()+" ,Name: " + p.getName() + " ,Phone: " + p.getLat();
+                    // Writing Contacts to
+                    Log.d("Name: ", log);
+                    MarkerOptions marker = new MarkerOptions().position(new LatLng(p.getLat(), p.getLongl())).title(p.getName());
+                    googleMap.addMarker(marker);
+                }
+                MarkerOptions marker = new MarkerOptions().position(new LatLng(22.996170,72.599584)).title("MANINAGAR");
+                googleMap.addMarker(marker);
             }
         }
     }
