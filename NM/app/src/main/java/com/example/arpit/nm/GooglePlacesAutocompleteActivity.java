@@ -68,6 +68,7 @@ public class GooglePlacesAutocompleteActivity extends Activity implements OnItem
         args.putParcelable("position", l);
         intent.putExtra("bundle", args);
         startActivity(intent);
+        finish();
 
 
 

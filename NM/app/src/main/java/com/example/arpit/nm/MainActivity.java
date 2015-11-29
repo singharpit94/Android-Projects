@@ -1,7 +1,10 @@
 package com.example.arpit.nm;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -40,6 +43,7 @@ public class MainActivity extends AppCompatActivity
     DatabaseHandler db=new DatabaseHandler(this);
     List<Places> places;
     LatLng Position;
+    LatLng Spos=null;
     Bundle bundle=null;
 
 
@@ -70,6 +74,37 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
+          Button b1=(Button)findViewById(R.id.button1);
+
+
+          Button b2=(Button)findViewById( R.id.button2);
+        b1.setOnClickListener(new OnClickListener() {
+            public void onClick(View arg0) {
+
+                // Start NewActivity.class
+                if(Spos!=null) {
+                    Bundle args = new Bundle();
+
+                    args.putParcelable("position", Spos);
+
+                    Intent myIntent = new Intent(MainActivity.this,
+                            Booking.class);
+                    myIntent.putExtra("bundle", args);
+                    startActivity(myIntent);
+                }
+                else {
+
+                     Toast.makeText(getApplicationContext(),"SELECT",Toast.LENGTH_LONG);
+
+                }
+
+
+
+            }
+
+
+        });
+
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -90,6 +125,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
+
     }
 
     @Override
@@ -112,7 +148,8 @@ public class MainActivity extends AppCompatActivity
                 return true;
             case R.id.action_favourite:
                     {Intent i= new Intent(this, GooglePlacesAutocompleteActivity.class);
-                  startActivity(i);}
+                  startActivity(i);
+                    finish();}
 
              default:
             return super.onOptionsItemSelected(item);
@@ -170,36 +207,13 @@ public class MainActivity extends AppCompatActivity
 
                     View v = getLayoutInflater().inflate(R.layout.info_window_layout, null);
                     TextView t= (TextView)v.findViewById(R.id.text);
-                    Button b=(Button)v.findViewById(R.id.btn);
-                    t.setText("Hello");
-                    OnClickListener listener = new OnClickListener() {
+                    TextView t1= (TextView)v.findViewById(R.id.text1);
+                    TextView t2= (TextView)v.findViewById(R.id.text2);
 
-                        @Override
-                        public void onClick(View v) {
+                    t.setText("Place :Maningar\n");
+                    t1.setText("Rate :20 Rs\n");
+                    t2.setText("Available :40\n");
 
-                            PopupMenu popup = new PopupMenu(getBaseContext(), v);
-
-
-                            popup.getMenuInflater().inflate(R.menu.popup, popup.getMenu());
-
-
-                            popup.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-
-                                @Override
-                                public boolean onMenuItemClick(MenuItem item) {
-                                    Toast.makeText(getBaseContext(), "You selected the action : " + item.getTitle(), Toast.LENGTH_SHORT).show();
-                                    return true;
-                                }
-                            });
-
-
-                            popup.show();
-                            Toast.makeText(getBaseContext(), "Arpit", Toast.LENGTH_LONG);
-
-                        }
-                    };
-
-                    b.setOnClickListener(listener);
 
                     return v;
 
@@ -229,7 +243,8 @@ public class MainActivity extends AppCompatActivity
 
                 @Override
                 public boolean onMarkerClick(Marker m) {
-                     //LatLng l=m.getPosition();
+                     Spos=m.getPosition();
+
                     m.showInfoWindow();
                     return true;
 
@@ -243,4 +258,7 @@ public class MainActivity extends AppCompatActivity
         super.onResume();
         initilizeMap();
     }
+
+
+
 }
