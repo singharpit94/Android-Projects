@@ -1,5 +1,6 @@
 package com.example.arpit.nm;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -14,15 +15,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.PopupMenu;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.view.View.OnClickListener;
+import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
@@ -30,15 +39,29 @@ public class MainActivity extends AppCompatActivity
     private GoogleMap googleMap;
     DatabaseHandler db=new DatabaseHandler(this);
     List<Places> places;
+    LatLng Position;
+    Bundle bundle=null;
+
+
+
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        db.addPlaces(new Places(1, 22.997284, 72.599593, 20.0, "Rambaug", 10));
+      /*  db.addPlaces(new Places(1, 22.997284, 72.599593, 20.0, "Rambaug", 10));
         db.addPlaces(new Places(2,22.996170,72.599584,30.0,"Maninagar",10));
-        db.addPlaces(new Places(3,22.978258,72.600226,30.0,"Isanpur",10));
+        db.addPlaces(new Places(3,22.978258,72.600226,30.0,"Isanpur",10));*/
+         bundle = getIntent().getParcelableExtra("bundle");
+
+
+        if(bundle!=null)
+        Position = bundle.getParcelable("position");
         try {
             // Loading map
             initilizeMap();
@@ -88,7 +111,8 @@ public class MainActivity extends AppCompatActivity
             case R.id.action_settings:
                 return true;
             case R.id.action_favourite:
-                return true;
+                    {Intent i= new Intent(this, GooglePlacesAutocompleteActivity.class);
+                  startActivity(i);}
 
              default:
             return super.onOptionsItemSelected(item);
@@ -130,7 +154,60 @@ public class MainActivity extends AppCompatActivity
                         "Sorry! unable to create maps", Toast.LENGTH_SHORT)
                         .show();
             }
-            else
+            googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+                // Use default InfoWindow frame
+                @Override
+                public View getInfoWindow(Marker arg0) {
+                    return null;
+                }
+
+
+                // Defines the contents of the InfoWindow
+                @Override
+                public View getInfoContents(Marker arg0)
+                {
+
+                    View v = getLayoutInflater().inflate(R.layout.info_window_layout, null);
+                    TextView t= (TextView)v.findViewById(R.id.text);
+                    Button b=(Button)v.findViewById(R.id.btn);
+                    t.setText("Hello");
+                    OnClickListener listener = new OnClickListener() {
+
+                        @Override
+                        public void onClick(View v) {
+
+                            PopupMenu popup = new PopupMenu(getBaseContext(), v);
+
+
+                            popup.getMenuInflater().inflate(R.menu.popup, popup.getMenu());
+
+
+                            popup.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+
+                                @Override
+                                public boolean onMenuItemClick(MenuItem item) {
+                                    Toast.makeText(getBaseContext(), "You selected the action : " + item.getTitle(), Toast.LENGTH_SHORT).show();
+                                    return true;
+                                }
+                            });
+
+
+                            popup.show();
+                            Toast.makeText(getBaseContext(), "Arpit", Toast.LENGTH_LONG);
+
+                        }
+                    };
+
+                    b.setOnClickListener(listener);
+
+                    return v;
+
+                }
+            });
+
+
+           /* else
             {
                 places=db.getAllPlaces();
                 for(Places p:places)
@@ -140,10 +217,25 @@ public class MainActivity extends AppCompatActivity
                     Log.d("Name: ", log);
                     MarkerOptions marker = new MarkerOptions().position(new LatLng(p.getLat(), p.getLongl())).title(p.getName());
                     googleMap.addMarker(marker);
-                }
+                }*/
                 MarkerOptions marker = new MarkerOptions().position(new LatLng(22.996170,72.599584)).title("MANINAGAR");
                 googleMap.addMarker(marker);
+            if(Position!=null)
+            { googleMap.moveCamera(CameraUpdateFactory.newLatLng(Position));
+                googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
             }
+            // Adding and showing marker while touching the GoogleMap
+            googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+
+                @Override
+                public boolean onMarkerClick(Marker m) {
+                     //LatLng l=m.getPosition();
+                    m.showInfoWindow();
+                    return true;
+
+
+                }
+            });
         }
     }
     @Override

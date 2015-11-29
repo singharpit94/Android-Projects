@@ -5,4 +5,11 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Logout</string>
+    <string name="title_activity_google_places_autocomplete">GooglePlacesAutocompleteActivity
+    </string>
+    <string name="spinner_title">Select Category</string>
+    <string name="str_btn">Open Popup Menu</string>
+    <string name="action1">Action1</string>
+    <string name="action2">Action2</string>
+    <string name="action3">Action3</string>
 </resources>
