@@ -8,7 +8,9 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.IBinder;
@@ -16,6 +18,10 @@ import android.os.PowerManager;
 import android.os.SystemClock;
 import android.support.v7.app.NotificationCompat;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -104,7 +110,7 @@ public class Notify extends Service {
 
                 try {
                     // Create a URL for the desired page
-                    URL updateURL = new URL("http://192.168.1.100:8000/" + localTime);
+                    URL updateURL = new URL("http://192.168.1.100:8000/notif");
 
                     // Read all the text returned by the server
                     BufferedReader in = new BufferedReader(new InputStreamReader(updateURL.openStream()));
@@ -142,23 +148,64 @@ public class Notify extends Service {
             @Override
             protected void onPostExecute(String title) {
                 int mId = 420;
+                JSONArray jarray=null;
+                JSONObject g1=null;
+                JSONObject f=null;
+                String update=null;
                 if (title == null) {
                     //stopSelf();
                     Toast.makeText(getApplicationContext(), "Arpit", Toast.LENGTH_SHORT).show();
+
                 } else {
 
-               /* Intent notificationIntent = new Intent(getApplicationContext(), MapActivity.class);
-                PendingIntent contentIntent = PendingIntent.getActivity(NotifyService.this, 0, notificationIntent, 0);*/
+                    try {
+                        jarray = new JSONArray(title);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
-                    //Set up the notification
+                    for(int i=0;i<jarray.length();i++) {
+                        try {
+                            g1 = jarray.getJSONObject(i);
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
+                        }
+                        try {
+                            f = g1.getJSONObject("fields");
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
+                        }
+                        try {
+                            update = f.getString("text");
+                        } catch (JSONException h) {
+                            h.printStackTrace();
+                        }
+                        break;
+
+                    }
+
+
+
+
+
+                        Intent notificationIntent = new Intent(getApplicationContext(), Hoja.class);
+                PendingIntent contentIntent = PendingIntent.getActivity(Notify.this, 0, notificationIntent, 0);
+                    Uri uri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+
+
+
+
 
                     Notification noti = new NotificationCompat.Builder(getApplicationContext()).setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
                             .setSmallIcon(R.mipmap.ic_launcher)
                             .setTicker("New Notification ...")
                             .setWhen(System.currentTimeMillis())
-                            .setContentTitle("Your app name")
-                            .setContentText(title)
-                                    // .setContentIntent(contentIntent)
+                            .setContentTitle("Mukti")
+                            .setContentText(update)
+                                     .setContentIntent(contentIntent)
+                                      .setSound(uri)
+
                                     //At most three action buttons can be added
                                     //.addAction(android.R.drawable.ic_menu_camera, "Action 1", contentIntent)
                                     //.addAction(android.R.drawable.ic_menu_compass, "Action 2", contentIntent)
