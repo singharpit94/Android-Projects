@@ -40,9 +40,10 @@ import java.util.TimerTask;
 public class Notify extends Service {
 
      String title1=null;
-    static int id=0;
+     int id=0;
     int cid=0;
     String s1;
+
 
 
     /**
@@ -51,9 +52,8 @@ public class Notify extends Service {
      *
      */
 
-   /* SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-    SharedPreferences.Editor editor=prefs.edit();*/
-
+   SharedPreferences prefs ;
+   SharedPreferences.Editor editor;
     public static final long NOTIFY_INTERVAL = 10 * 1000; // 10 seconds
 
     // run on another Thread to avoid crash
@@ -162,12 +162,19 @@ public class Notify extends Service {
                 String update=null;
                 if (title == null) {
                     //stopSelf();
-                    Toast.makeText(getApplicationContext(), "Arpit", Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(getApplicationContext(), "Arpit", Toast.LENGTH_SHORT).show();
+                    prefs=PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    editor=prefs.edit();
+                    update=prefs.getString("cu", "Singh");
+                    Toast.makeText(getApplicationContext(), update, Toast.LENGTH_SHORT).show();
+
+                    // s1=prefs.getString("current",null);
 
                 } else {
 
-                   // s1=prefs.getString("current",null);
-                    //id=Integer.parseInt(s1);
+                    prefs=PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    editor=prefs.edit();
+                    id=prefs.getInt("current",0);
 
                     try {
                         jarray = new JSONArray(title);
@@ -200,6 +207,8 @@ public class Notify extends Service {
 
                      {
                          id=cid;
+                         editor.putInt("current",id);
+                         editor.commit();
                          //s1=Integer.toString(id);
                        //  editor.putString("current",s1);
                        //  editor.commit();
@@ -241,7 +250,7 @@ public class Notify extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // Let it continue running until it is stopped.
-        Toast.makeText(this, "Service Started", Toast.LENGTH_LONG).show();
+       // Toast.makeText(this, "Service Started", Toast.LENGTH_LONG).show();
         return START_STICKY;
 
 }

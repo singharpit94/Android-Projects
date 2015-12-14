@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
-    String s1;
+    String s1=null;
     int key;
 
 
@@ -56,18 +56,21 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-       /* preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
          editor=preferences.edit();
 
 
 
-
-         s1=preferences.getString("current",null);
+           key=0;
+         key=preferences.getInt("current", -1);
+         s1=preferences.getString("cu",null);
        if(s1==null){
-            editor.putString("current","0");
+             Toast.makeText(getApplicationContext(),"Integer",Toast.LENGTH_LONG).show();
+            editor.putInt("current", 0);
+            editor.putString("cu","Arpit");
             editor.commit();
         }
-*/
+
         startService(new Intent(getBaseContext(), Notify.class));
 
     }
