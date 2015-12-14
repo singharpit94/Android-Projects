@@ -6,9 +6,11 @@ import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -40,6 +42,13 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
+    String s1;
+    int key;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +56,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+       /* preferences = PreferenceManager.getDefaultSharedPreferences(this);
+         editor=preferences.edit();
 
+
+
+
+         s1=preferences.getString("current",null);
+       if(s1==null){
+            editor.putString("current","0");
+            editor.commit();
+        }
+*/
         startService(new Intent(getBaseContext(), Notify.class));
-
-
 
     }
 

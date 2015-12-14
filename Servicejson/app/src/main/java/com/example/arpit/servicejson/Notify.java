@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
@@ -16,6 +17,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.support.v7.app.NotificationCompat;
 import android.widget.Toast;
 
@@ -38,6 +40,9 @@ import java.util.TimerTask;
 public class Notify extends Service {
 
      String title1=null;
+    static int id=0;
+    int cid=0;
+    String s1;
 
 
     /**
@@ -46,6 +51,8 @@ public class Notify extends Service {
      *
      */
 
+   /* SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+    SharedPreferences.Editor editor=prefs.edit();*/
 
     public static final long NOTIFY_INTERVAL = 10 * 1000; // 10 seconds
 
@@ -57,6 +64,7 @@ public class Notify extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
+
 
 
     @Override
@@ -158,6 +166,9 @@ public class Notify extends Service {
 
                 } else {
 
+                   // s1=prefs.getString("current",null);
+                    //id=Integer.parseInt(s1);
+
                     try {
                         jarray = new JSONArray(title);
                     } catch (JSONException e) {
@@ -172,6 +183,7 @@ public class Notify extends Service {
                         }
                         try {
                             f = g1.getJSONObject("fields");
+                            cid=g1.getInt("pk");
                         } catch (JSONException e1) {
                             e1.printStackTrace();
                         }
@@ -183,44 +195,43 @@ public class Notify extends Service {
                         break;
 
                     }
+                     if(cid>id)
 
 
+                     {
+                         id=cid;
+                         //s1=Integer.toString(id);
+                       //  editor.putString("current",s1);
+                       //  editor.commit();
+                         Intent notificationIntent = new Intent(getApplicationContext(), Hoja.class);
+                         PendingIntent contentIntent = PendingIntent.getActivity(Notify.this, 0, notificationIntent, 0);
+                         Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
 
+                         Notification noti = new NotificationCompat.Builder(getApplicationContext()).setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
+                                 .setSmallIcon(R.mipmap.ic_launcher)
+                                 .setTicker("New Notification ...")
+                                 .setWhen(System.currentTimeMillis())
+                                 .setContentTitle("Mukti")
+                                 .setContentText(update)
+                                 .setContentIntent(contentIntent)
+                                 .setSound(uri)
 
-                        Intent notificationIntent = new Intent(getApplicationContext(), Hoja.class);
-                PendingIntent contentIntent = PendingIntent.getActivity(Notify.this, 0, notificationIntent, 0);
-                    Uri uri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                                         //At most three action buttons can be added
+                                         //.addAction(android.R.drawable.ic_menu_camera, "Action 1", contentIntent)
+                                         //.addAction(android.R.drawable.ic_menu_compass, "Action 2", contentIntent)
+                                         //.addAction(android.R.drawable.ic_menu_info_details, "Action 3", contentIntent)
+                                 .setAutoCancel(true).build();
 
-
-
-
-
-
-                    Notification noti = new NotificationCompat.Builder(getApplicationContext()).setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                            .setSmallIcon(R.mipmap.ic_launcher)
-                            .setTicker("New Notification ...")
-                            .setWhen(System.currentTimeMillis())
-                            .setContentTitle("Mukti")
-                            .setContentText(update)
-                                     .setContentIntent(contentIntent)
-                                      .setSound(uri)
-
-                                    //At most three action buttons can be added
-                                    //.addAction(android.R.drawable.ic_menu_camera, "Action 1", contentIntent)
-                                    //.addAction(android.R.drawable.ic_menu_compass, "Action 2", contentIntent)
-                                    //.addAction(android.R.drawable.ic_menu_info_details, "Action 3", contentIntent)
-                            .setAutoCancel(true).build();
-
-                    //Show the notification
-                    NotificationManager mNotificationManager =
-                            (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                    // mId allows you to update the notification later on.
-                    mNotificationManager.notify(mId, noti);
-                    // handle your data
-                    // stopSelf();
-                    //Toast.makeText(getApplicationContext(),title,Toast.LENGTH_LONG).show();
-
+                         //Show the notification
+                         NotificationManager mNotificationManager =
+                                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                         // mId allows you to update the notification later on.
+                         mNotificationManager.notify(mId, noti);
+                         // handle your data
+                         // stopSelf();
+                         //Toast.makeText(getApplicationContext(),title,Toast.LENGTH_LONG).show();
+                     }
                 }
             }
         }
