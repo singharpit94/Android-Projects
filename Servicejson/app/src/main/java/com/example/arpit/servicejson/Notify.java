@@ -118,7 +118,7 @@ public class Notify extends Service {
 
                 try {
                     // Create a URL for the desired page
-                    URL updateURL = new URL("http://192.168.1.100:8000/notif");
+                    URL updateURL = new URL("http://172.16.41.132:8000/notif");
 
                     // Read all the text returned by the server
                     BufferedReader in = new BufferedReader(new InputStreamReader(updateURL.openStream()));
@@ -212,7 +212,7 @@ public class Notify extends Service {
                          //s1=Integer.toString(id);
                        //  editor.putString("current",s1);
                        //  editor.commit();
-                         Intent notificationIntent = new Intent(getApplicationContext(), Hoja.class);
+                         Intent notificationIntent = new Intent(getApplicationContext(), College.class);
                          PendingIntent contentIntent = PendingIntent.getActivity(Notify.this, 0, notificationIntent, 0);
                          Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 

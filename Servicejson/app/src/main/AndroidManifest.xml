@@ -24,23 +24,8 @@
         <service android:name=".Notify" />
 
         <activity
-            android:name=".Testing"
-            android:label="@string/title_activity_testing"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
-        <activity
-            android:name=".Zening"
-            android:label="@string/title_activity_zening"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
-        <activity
-            android:name=".Final"
-            android:label="@string/title_activity_final"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
-        <activity
-            android:name=".Hoja"
-            android:label="@string/title_activity_hoja"
+            android:name=".College"
+            android:label="@string/title_activity_college"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
     </application>
