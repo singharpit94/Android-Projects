@@ -144,7 +144,7 @@ public class GETR extends Fragment {
 
 
 
-                Toast.makeText(getContext(),s,Toast.LENGTH_LONG).show();
+              //  Toast.makeText(getContext(),s,Toast.LENGTH_LONG).show();
                 parseData();
 
             }

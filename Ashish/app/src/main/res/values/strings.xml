@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Ashish</string>
     <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">GridView with Images</string>
+    <string name="img_description">Image Description</string>
+    <string name="img_original_description">Original Image Description</string>
 </resources>
